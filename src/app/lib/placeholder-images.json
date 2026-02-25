@@ -11,6 +11,12 @@
       "description": "Clean project workspace",
       "imageUrl": "https://picsum.photos/seed/project-1/800/600",
       "imageHint": "project office"
+    },
+    {
+      "id": "tropical-bg",
+      "description": "Tropical floral background pattern",
+      "imageUrl": "https://picsum.photos/seed/tropical-flowers/1920/1080",
+      "imageHint": "tropical floral"
     }
   ]
 }
