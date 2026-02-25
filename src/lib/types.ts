@@ -7,6 +7,7 @@ export interface Basics {
   summary: string;
   location: string;
   linkedin: string;
+  discord: string;
 }
 
 export interface AboutData {

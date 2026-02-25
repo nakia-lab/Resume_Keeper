@@ -4,48 +4,38 @@ import { useResume } from '@/context/ResumeContext';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mail, Phone, MapPin, Linkedin, Globe, ExternalLink, Download, Sparkles, Link as LinkIcon, Trash2, Save } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Globe, ExternalLink, Sparkles, Link as LinkIcon, Save, MessageCircle, Maximize2 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 
 export default function PreviewPage() {
-  const { data, resetData } = useResume();
+  const { data } = useResume();
   const { toast } = useToast();
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   const handleSaveSnapshot = () => {
-    // Context auto-saves to localStorage, but we reinforce it here
     localStorage.setItem('resume-keeper-data', JSON.stringify(data));
     toast({ 
-      title: "Snapshot Saved", 
-      description: "Your portfolio data is securely backed up in your browser storage." 
+      title: "Snapshot Secured", 
+      description: "Your current profile state is preserved." 
     });
   };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 print-hidden">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-headline font-bold">Portfolio Live Preview</h1>
-          <p className="text-sm text-muted-foreground">This is exactly how your portfolio will look to recruiters.</p>
+          <p className="text-sm text-muted-foreground">This is how your digital presence appears to others.</p>
         </div>
         <div className="flex gap-2 w-full md:w-auto">
-          <Button onClick={handleSaveSnapshot} variant="outline" className="gap-2 flex-1 md:flex-none">
+          <Button onClick={handleSaveSnapshot} variant="default" className="gap-2 flex-1 md:flex-none">
             <Save className="w-4 h-4" /> Save Snapshot
-          </Button>
-          <Button onClick={handlePrint} className="gap-2 flex-1 md:flex-none bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-            <Download className="w-4 h-4" /> Print / Save PDF
-          </Button>
-          <Button onClick={resetData} variant="destructive" className="gap-2 flex-1 md:flex-none">
-            <Trash2 className="w-4 h-4" /> Reset Data
           </Button>
         </div>
       </div>
 
-      <div className="resume-container bg-white text-slate-900 shadow-2xl rounded-2xl overflow-hidden border border-slate-200 mx-auto max-w-5xl print:shadow-none print:border-none print:m-0 print:max-w-none print-bg-white">
+      <div className="resume-container bg-white text-slate-900 shadow-2xl rounded-2xl overflow-hidden border border-slate-200 mx-auto max-w-5xl">
         {/* Header Section */}
         <div className="bg-slate-900 text-white p-8 md:p-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] -mr-32 -mt-32"></div>
@@ -72,6 +62,9 @@ export default function PreviewPage() {
               {data.basics.linkedin && (
                 <div className="flex items-center gap-1.5"><Linkedin className="w-4 h-4" /> {data.basics.linkedin}</div>
               )}
+              {data.basics.discord && (
+                <div className="flex items-center gap-1.5"><MessageCircle className="w-4 h-4" /> {data.basics.discord}</div>
+              )}
             </div>
           </div>
         </div>
@@ -87,7 +80,7 @@ export default function PreviewPage() {
                 </p>
               )}
               <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
-                {data.about.longAbout || 'Provide an about section to showcase your personality.'}
+                {data.about.longAbout || 'About section content.'}
               </p>
             </section>
 
@@ -118,42 +111,81 @@ export default function PreviewPage() {
                 <h3 className="text-2xl font-headline font-bold border-l-4 border-primary pl-4">Projects</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {data.projects.map((proj) => (
-                    <Card key={proj.id} className="project-item overflow-hidden border-slate-200 group hover:shadow-lg transition-shadow bg-slate-50/50">
-                      <div className="aspect-video relative bg-slate-200 overflow-hidden">
-                        {proj.imageUrl ? (
-                          <Image src={proj.imageUrl} alt={proj.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-400">
-                            <Globe className="w-12 h-12 opacity-20" />
+                    <Dialog key={proj.id}>
+                      <DialogTrigger asChild>
+                        <Card className="project-item overflow-hidden border-slate-200 group hover:shadow-lg transition-all bg-slate-50/50 cursor-pointer hover:border-primary/30">
+                          <div className="aspect-video relative bg-slate-200 overflow-hidden">
+                            {proj.imageUrl ? (
+                              <Image src={proj.imageUrl} alt={proj.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                <Globe className="w-12 h-12 opacity-20" />
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                              <Maximize2 className="text-white opacity-0 group-hover:opacity-100 w-8 h-8 transition-opacity" />
+                            </div>
                           </div>
-                        )}
-                      </div>
-                      <div className="p-5 space-y-3">
-                        <div className="flex justify-between items-start">
-                          <h4 className="font-bold text-lg">{proj.name}</h4>
-                          <div className="flex gap-2">
+                          <div className="p-5 space-y-3">
+                            <h4 className="font-bold text-lg">{proj.name}</h4>
+                            <p className="text-sm text-slate-600 line-clamp-2">{proj.summary}</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {proj.techStack.map((tech, idx) => (
+                                <Badge key={idx} variant="secondary" className="text-[10px] px-2 py-0 bg-white border-slate-200 text-slate-600">
+                                  {tech}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </Card>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle className="text-3xl font-bold">{proj.name}</DialogTitle>
+                          <DialogDescription className="text-lg text-primary font-medium">{proj.role}</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-6 pt-4">
+                          <div className="aspect-video relative rounded-xl overflow-hidden bg-slate-100">
+                            {proj.imageUrl ? (
+                              <Image src={proj.imageUrl} alt={proj.name} fill className="object-cover" unoptimized />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                <Globe className="w-20 h-20" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="space-y-4">
+                            <h4 className="text-xl font-bold border-b pb-2">Description</h4>
+                            <p className="text-lg leading-relaxed text-slate-700">{proj.summary}</p>
+                            <div className="flex flex-wrap gap-2">
+                              {proj.techStack.map((tech, i) => (
+                                <Badge key={i} variant="outline" className="border-primary/20">{tech}</Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="space-y-4">
+                            <h4 className="text-xl font-bold border-b pb-2">Key Accomplishments</h4>
+                            <ul className="list-disc list-inside space-y-3 text-lg text-slate-700">
+                              {proj.bullets.filter(b => b.trim() !== '').map((b, i) => (
+                                <li key={i}>{b}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="pt-4 flex gap-4">
                             {proj.evidenceUrl && (
-                              <a href={proj.evidenceUrl} target="_blank" className="p-1 hover:text-primary transition-colors">
-                                <ExternalLink className="w-4 h-4" />
-                              </a>
+                              <Button asChild variant="outline" className="gap-2">
+                                <a href={proj.evidenceUrl} target="_blank"><ExternalLink className="w-4 h-4" /> Live Site</a>
+                              </Button>
                             )}
                             {proj.firebaseUrl && (
-                              <a href={proj.firebaseUrl} target="_blank" className="p-1 hover:text-primary transition-colors">
-                                <LinkIcon className="w-4 h-4" />
-                              </a>
+                              <Button asChild variant="outline" className="gap-2">
+                                <a href={proj.firebaseUrl} target="_blank"><LinkIcon className="w-4 h-4" /> Repository</a>
+                              </Button>
                             )}
                           </div>
                         </div>
-                        <p className="text-sm text-slate-600 line-clamp-2">{proj.summary}</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {proj.techStack.map((tech, idx) => (
-                            <Badge key={idx} variant="secondary" className="text-[10px] px-2 py-0 bg-white border-slate-200 text-slate-600">
-                              {tech}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </Card>
+                      </DialogContent>
+                    </Dialog>
                   ))}
                 </div>
               </section>

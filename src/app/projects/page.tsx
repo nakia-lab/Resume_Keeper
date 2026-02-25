@@ -8,12 +8,14 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Trash2, Wand2, Loader2, Link as LinkIcon, FileUp, Globe, Save } from 'lucide-react';
+import { Plus, Trash2, Wand2, Loader2, Link as LinkIcon, FileUp, Globe, Save, Maximize2 } from 'lucide-react';
 import { generateProjectSummaryAndBullets } from '@/ai/flows/generate-project-summary-bullets-flow';
 import Image from 'next/image';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 export default function ProjectsPage() {
-  const { data, addProject, updateProject, removeProject, resetData } = useResume();
+  const { data, addProject, updateProject, removeProject } = useResume();
   const { toast } = useToast();
   const [generatingId, setGeneratingId] = useState<string | null>(null);
 
@@ -81,47 +83,82 @@ export default function ProjectsPage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-3xl font-headline font-bold">Projects Portfolio</h1>
-          <p className="text-muted-foreground">Showcase your best work with evidence links, photos, and AI summaries.</p>
+          <p className="text-muted-foreground">Showcase your best work with evidence links and AI summaries.</p>
         </div>
         <div className="flex gap-2 w-full md:w-auto">
           <Button onClick={onAddProject} className="gap-2 flex-1 md:flex-none">
             <Plus className="w-4 h-4" /> Add Project
           </Button>
           <Button onClick={handleSaveAll} variant="outline" className="gap-2 flex-1 md:flex-none">
-            <Save className="w-4 h-4" /> Save All
-          </Button>
-          <Button onClick={resetData} variant="destructive" className="gap-2 flex-1 md:flex-none">
-            <Trash2 className="w-4 h-4" /> Clear All
+            <Save className="w-4 h-4" /> Save Snapshot
           </Button>
         </div>
       </header>
 
       <div className="grid grid-cols-1 gap-8">
         {data.projects.map((project) => (
-          <Card key={project.id} className="relative group overflow-hidden">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity text-destructive"
-              onClick={() => removeProject(project.id)}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
+          <Card key={project.id} className="relative group overflow-hidden border-2 hover:border-primary/20 transition-all">
+            <div className="absolute top-2 right-2 z-10 flex gap-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="secondary" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Maximize2 className="w-4 h-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="text-3xl font-bold">{project.name}</DialogTitle>
+                    <DialogDescription className="text-lg text-primary font-medium">{project.role}</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-6 pt-4">
+                    <div className="aspect-video relative rounded-xl overflow-hidden bg-muted">
+                      {project.imageUrl ? (
+                        <Image src={project.imageUrl} alt={project.name} fill className="object-cover" unoptimized />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground opacity-30">
+                          <Globe className="w-20 h-20" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="text-xl font-bold border-b pb-2">Overview</h4>
+                      <p className="text-lg leading-relaxed">{project.summary || 'No summary provided yet.'}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.techStack.map((tech, i) => (
+                          <Badge key={i} variant="outline" className="bg-primary/5">{tech}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="text-xl font-bold border-b pb-2">Key Highlights</h4>
+                      <ul className="list-disc list-inside space-y-2 text-lg">
+                        {project.bullets.filter(b => b.trim() !== '').map((b, i) => (
+                          <li key={i}>{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:bg-destructive/10"
+                onClick={() => removeProject(project.id)}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+            
             <div className="grid grid-cols-1 lg:grid-cols-3">
               <div className="p-6 bg-muted/30 border-r border-border space-y-4">
                 <div className="aspect-video bg-muted rounded-lg relative overflow-hidden flex flex-col items-center justify-center border-2 border-dashed border-border group/img">
                   {project.imageUrl ? (
-                    <Image 
-                      src={project.imageUrl} 
-                      alt={project.name} 
-                      fill 
-                      className="object-cover" 
-                      unoptimized
-                    />
+                    <Image src={project.imageUrl} alt={project.name} fill className="object-cover" unoptimized />
                   ) : (
                     <div className="text-center p-4">
                       <FileUp className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">No image added</p>
+                      <p className="text-xs text-muted-foreground">Upload preview</p>
                     </div>
                   )}
                   <input 
@@ -141,30 +178,12 @@ export default function ProjectsPage() {
                 
                 <div className="space-y-4 pt-2">
                   <div className="space-y-2">
-                    <Label className="text-xs uppercase font-bold text-muted-foreground">Upload Work Example</Label>
-                    <Button variant="outline" size="sm" className="w-full gap-2" asChild>
-                      <Label htmlFor={`file-${project.id}`} className="cursor-pointer">
-                        <FileUp className="w-4 h-4" /> Browse Photo
-                      </Label>
-                    </Button>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-xs uppercase font-bold text-muted-foreground">Or Paste Image URL Below</Label>
-                    <Input 
-                      placeholder="https://images.unsplash.com/..." 
-                      value={project.imageUrl} 
-                      onChange={e => updateProject(project.id, { imageUrl: e.target.value })} 
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-xs uppercase font-bold text-muted-foreground">Links</Label>
+                    <Label className="text-xs uppercase font-bold text-muted-foreground">Project Links</Label>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
                         <Input 
-                          placeholder="Live Evidence/URL" 
+                          placeholder="Evidence URL" 
                           value={project.evidenceUrl} 
                           onChange={e => updateProject(project.id, { evidenceUrl: e.target.value })} 
                         />
@@ -172,7 +191,7 @@ export default function ProjectsPage() {
                       <div className="flex items-center gap-2">
                         <LinkIcon className="w-4 h-4 text-muted-foreground shrink-0" />
                         <Input 
-                          placeholder="Firebase/GitHub Link" 
+                          placeholder="Firebase/Code" 
                           value={project.firebaseUrl} 
                           onChange={e => updateProject(project.id, { firebaseUrl: e.target.value })} 
                         />
@@ -220,19 +239,19 @@ export default function ProjectsPage() {
                       disabled={generatingId === project.id}
                     >
                       {generatingId === project.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
-                      Generate Summary
+                      Generate AI
                     </Button>
                   </div>
                   <Textarea 
                     value={project.summary} 
                     onChange={e => updateProject(project.id, { summary: e.target.value })}
-                    placeholder="Draft summary or AI output will appear here..."
+                    placeholder="Describe your project..."
                     className="min-h-[100px]"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Key Highlights (Exactly 3)</Label>
+                  <Label>Key Highlights</Label>
                   <div className="grid gap-2">
                     {project.bullets.map((bullet, idx) => (
                       <Input 
@@ -255,8 +274,8 @@ export default function ProjectsPage() {
         {data.projects.length === 0 && (
           <div className="text-center py-20 border-2 border-dashed border-border rounded-xl">
             <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-bold">No projects yet</h3>
-            <p className="text-muted-foreground mb-6">Add your first project to start building your portfolio.</p>
+            <h3 className="text-xl font-bold">Showcase your work</h3>
+            <p className="text-muted-foreground mb-6">Add projects to demonstrate your skills in action.</p>
             <Button onClick={onAddProject} size="lg">Add My First Project</Button>
           </div>
         )}

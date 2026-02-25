@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useResume } from '@/context/ResumeContext';
 import { useToast } from '@/hooks/use-toast';
-import { Sparkles, Plus, Trash2, Wand2, Loader2, Save } from 'lucide-react';
+import { Sparkles, Plus, Trash2, Wand2, Loader2, Save, MessageCircle, Linkedin } from 'lucide-react';
 import { generateAbout } from '@/ai/flows/generate-about-section-flow';
 import { rewriteResponsibilities } from '@/ai/flows/rewrite-job-responsibilities-flow';
 
@@ -29,7 +29,6 @@ export default function ProfilePage() {
     addEducation, 
     updateEducation, 
     removeEducation,
-    resetData 
   } = useResume();
 
   const [isGeneratingAbout, setIsGeneratingAbout] = useState(false);
@@ -82,7 +81,7 @@ export default function ProfilePage() {
   };
 
   const handleSaveAll = () => {
-    toast({ title: "All Changes Saved", description: "Your profile information has been updated." });
+    toast({ title: "Profile Saved", description: "Your professional data has been updated." });
   };
 
   return (
@@ -95,9 +94,6 @@ export default function ProfilePage() {
         <div className="flex gap-2 w-full md:w-auto">
           <Button onClick={handleSaveAll} variant="default" className="gap-2 flex-1 md:flex-none">
             <Save className="w-4 h-4" /> Save Profile
-          </Button>
-          <Button onClick={resetData} variant="destructive" className="gap-2 flex-1 md:flex-none">
-            <Trash2 className="w-4 h-4" /> Delete Data
           </Button>
         </div>
       </header>
@@ -114,32 +110,44 @@ export default function ProfilePage() {
           <Card>
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
-              <CardDescription>The core details recruiters use to find and contact you.</CardDescription>
+              <CardDescription>Core details recruiters use to find and contact you.</CardDescription>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label>Full Name</Label>
-                <Input value={data.basics.name} onChange={e => updateBasics({ name: e.target.value })} placeholder="John Doe" />
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label>Full Name</Label>
+                  <Input value={data.basics.name} onChange={e => updateBasics({ name: e.target.value })} placeholder="John Doe" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Professional Label</Label>
+                  <Input value={data.basics.label} onChange={e => updateBasics({ label: e.target.value })} placeholder="Senior Developer" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Email</Label>
+                  <Input value={data.basics.email} onChange={e => updateBasics({ email: e.target.value })} placeholder="john@example.com" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Phone</Label>
+                  <Input value={data.basics.phone} onChange={e => updateBasics({ phone: e.target.value })} placeholder="+1 234 567 890" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Location</Label>
+                  <Input value={data.basics.location} onChange={e => updateBasics({ location: e.target.value })} placeholder="San Francisco, CA" />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Professional Label</Label>
-                <Input value={data.basics.label} onChange={e => updateBasics({ label: e.target.value })} placeholder="Senior Developer" />
-              </div>
-              <div className="space-y-2">
-                <Label>Email</Label>
-                <Input value={data.basics.email} onChange={e => updateBasics({ email: e.target.value })} placeholder="john@example.com" />
-              </div>
-              <div className="space-y-2">
-                <Label>Phone</Label>
-                <Input value={data.basics.phone} onChange={e => updateBasics({ phone: e.target.value })} placeholder="+1 234 567 890" />
-              </div>
-              <div className="space-y-2">
-                <Label>LinkedIn URL</Label>
-                <Input value={data.basics.linkedin} onChange={e => updateBasics({ linkedin: e.target.value })} placeholder="linkedin.com/in/johndoe" />
-              </div>
-              <div className="space-y-2">
-                <Label>Location</Label>
-                <Input value={data.basics.location} onChange={e => updateBasics({ location: e.target.value })} placeholder="San Francisco, CA" />
+
+              <div className="pt-4 border-t">
+                <h3 className="font-semibold mb-4 text-primary">Social Profiles</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2"><Linkedin className="w-4 h-4" /> LinkedIn URL</Label>
+                    <Input value={data.basics.linkedin} onChange={e => updateBasics({ linkedin: e.target.value })} placeholder="linkedin.com/in/johndoe" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2"><MessageCircle className="w-4 h-4" /> Discord Tag/Link</Label>
+                    <Input value={data.basics.discord} onChange={e => updateBasics({ discord: e.target.value })} placeholder="username#0000" />
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -152,15 +160,7 @@ export default function ProfilePage() {
                 <CardTitle>The "About" Section</CardTitle>
                 <CardDescription>A professional summary that captures your essence.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Long About (80-120 words)</Label>
-                  <Textarea 
-                    className="min-h-[150px]" 
-                    value={data.about.longAbout} 
-                    onChange={e => updateAbout({ longAbout: e.target.value })}
-                  />
-                </div>
+              <CardContent className="space-y-6">
                 <div className="space-y-2">
                   <Label>Short Bio (Elevator Pitch)</Label>
                   <Textarea 
@@ -168,6 +168,14 @@ export default function ProfilePage() {
                     placeholder="Brief 1-2 sentence introduction..."
                     value={data.about.shortBio} 
                     onChange={e => updateAbout({ shortBio: e.target.value })} 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Long About (80-120 words)</Label>
+                  <Textarea 
+                    className="min-h-[180px]" 
+                    value={data.about.longAbout} 
+                    onChange={e => updateAbout({ longAbout: e.target.value })}
                   />
                 </div>
               </CardContent>
@@ -179,11 +187,11 @@ export default function ProfilePage() {
                   <Sparkles className="w-4 h-4 text-primary" />
                   AI Assistant
                 </CardTitle>
-                <CardDescription>Feed the AI some context to generate your sections.</CardDescription>
+                <CardDescription>Feed context to AI to generate these sections.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Target Roles (comma separated)</Label>
+                  <Label>Target Roles</Label>
                   <Input 
                     placeholder="UI Designer, Frontend Engineer" 
                     value={data.about.targetRoles.join(', ')} 
@@ -204,7 +212,7 @@ export default function ProfilePage() {
                   disabled={isGeneratingAbout}
                 >
                   {isGeneratingAbout ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
-                  Generate About
+                  Generate Content
                 </Button>
               </CardContent>
             </Card>

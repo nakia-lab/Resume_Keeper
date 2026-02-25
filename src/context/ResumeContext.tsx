@@ -16,7 +16,6 @@ interface ResumeContextType {
   addProject: (proj: Project) => void;
   updateProject: (id: string, proj: Partial<Project>) => void;
   removeProject: (id: string) => void;
-  resetData: () => void;
 }
 
 const initialData: ResumeData = {
@@ -29,6 +28,7 @@ const initialData: ResumeData = {
     summary: '',
     location: '',
     linkedin: '',
+    discord: '',
   },
   about: {
     longAbout: '',
@@ -126,15 +126,6 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
-  const resetData = () => {
-    if (confirm("Are you sure you want to delete ALL data? This action will permanently clear your portfolio and cannot be undone.")) {
-      setData(initialData);
-      localStorage.removeItem('resume-keeper-data');
-      // Force reload to clear all local state across components
-      window.location.href = '/';
-    }
-  };
-
   return (
     <ResumeContext.Provider
       value={{
@@ -150,7 +141,6 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         addProject,
         updateProject,
         removeProject,
-        resetData,
       }}
     >
       {children}
