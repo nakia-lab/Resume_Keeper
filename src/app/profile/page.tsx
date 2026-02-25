@@ -19,7 +19,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { toast } = useToast();
   const activeTab = searchParams.get('tab') || 'basics';
-  const { data, updateBasics, updateAbout, addJob, updateJob, removeJob, addEducation, removeEducation } = useResume();
+  const { data, updateBasics, updateAbout, addJob, updateJob, removeJob, addEducation, updateEducation, removeEducation } = useResume();
 
   const [isGeneratingAbout, setIsGeneratingAbout] = useState(false);
   const [rewritingJobId, setRewritingJobId] = useState<string | null>(null);
@@ -280,15 +280,26 @@ export default function ProfilePage() {
                 <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Institution</Label>
-                    <Input value={edu.institution} />
+                    <Input 
+                      value={edu.institution} 
+                      onChange={e => updateEducation(edu.id, { institution: e.target.value })} 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Degree Type</Label>
-                    <Input value={edu.studyType} placeholder="Bachelor of Science" />
+                    <Input 
+                      value={edu.studyType} 
+                      placeholder="Bachelor of Science" 
+                      onChange={e => updateEducation(edu.id, { studyType: e.target.value })} 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Field of Study</Label>
-                    <Input value={edu.area} placeholder="Computer Science" />
+                    <Input 
+                      value={edu.area} 
+                      placeholder="Computer Science" 
+                      onChange={e => updateEducation(edu.id, { area: e.target.value })} 
+                    />
                   </div>
                 </CardContent>
               </Card>
