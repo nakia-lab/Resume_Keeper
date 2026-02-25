@@ -127,9 +127,11 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const resetData = () => {
-    if (confirm("Are you sure you want to delete ALL data? This cannot be undone.")) {
+    if (confirm("Are you sure you want to delete ALL data? This action will permanently clear your portfolio and cannot be undone.")) {
       setData(initialData);
       localStorage.removeItem('resume-keeper-data');
+      // Force reload to clear all local state across components
+      window.location.href = '/';
     }
   };
 

@@ -4,29 +4,38 @@
 
 @layer base {
   :root {
+    /* Primary: #96F2DD (Mint) */
+    --primary: 166 79% 77%;
+    --primary-foreground: 240 60% 10%;
+    
+    /* Secondary (Complementary): #2E2EB8 (Deep Blue) */
+    --secondary: 240 60% 45%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Accent: #A8BAE0 (Periwinkle) */
+    --accent: 221 49% 77%;
+    --accent-foreground: 240 60% 10%;
+
+    /* Background (Kept as is: Light Lavender/Grey) */
     --background: 260 25% 96%;
     --foreground: 260 40% 10%;
+    
     --card: 0 0% 100%;
     --card-foreground: 260 40% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 260 40% 10%;
-    --primary: 270 48% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 60% 45%;
-    --secondary-foreground: 0 0% 100%;
     --muted: 260 10% 90%;
     --muted-foreground: 260 20% 40%;
-    --accent: 166 79% 77%;
-    --accent-foreground: 260 40% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 260 20% 85%;
     --input: 260 20% 85%;
-    --ring: 270 48% 55%;
+    --ring: 166 79% 77%;
     --radius: 0.75rem;
-    --chart-1: 270 48% 55%;
+    
+    --chart-1: 166 79% 77%;
     --chart-2: 240 60% 45%;
-    --chart-3: 166 79% 77%;
+    --chart-3: 221 49% 77%;
     --chart-4: 221 49% 77%;
     --chart-5: 260 20% 40%;
   }
@@ -38,19 +47,19 @@
     --card-foreground: 260 20% 98%;
     --popover: 260 40% 10%;
     --popover-foreground: 260 20% 98%;
-    --primary: 270 48% 65%;
+    --primary: 166 79% 60%;
     --primary-foreground: 260 40% 10%;
     --secondary: 240 60% 60%;
     --secondary-foreground: 260 20% 98%;
     --muted: 260 30% 15%;
     --muted-foreground: 260 10% 70%;
-    --accent: 166 79% 40%;
+    --accent: 221 49% 60%;
     --accent-foreground: 260 20% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 260 30% 20%;
     --input: 260 30% 20%;
-    --ring: 270 48% 65%;
+    --ring: 166 79% 60%;
   }
 }
 
@@ -64,14 +73,26 @@
 }
 
 @media print {
-  nav, .print-hidden, button {
+  nav, .print-hidden, button, .md\:ml-64 {
     display: none !important;
   }
-  main {
+  main, .md\:ml-64 {
     margin: 0 !important;
     padding: 0 !important;
   }
   .print-bg-white {
     background-color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .resume-container {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  .experience-item, .project-item {
+    break-inside: avoid;
   }
 }

@@ -3,7 +3,6 @@
 import { useResume } from '@/context/ResumeContext';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Mail, Phone, MapPin, Linkedin, Globe, ExternalLink, Download, Sparkles, Link as LinkIcon, Trash2, Save } from 'lucide-react';
 import Image from 'next/image';
@@ -17,19 +16,27 @@ export default function PreviewPage() {
     window.print();
   };
 
-  const handleSave = () => {
-    toast({ title: "Preview Snapshot Saved", description: "Your current layout and data have been cached." });
+  const handleSaveSnapshot = () => {
+    // Context auto-saves to localStorage, but we reinforce it here
+    localStorage.setItem('resume-keeper-data', JSON.stringify(data));
+    toast({ 
+      title: "Snapshot Saved", 
+      description: "Your portfolio data is securely backed up in your browser storage." 
+    });
   };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 print-hidden">
-        <h1 className="text-2xl font-headline font-bold">Portfolio Live Preview</h1>
+        <div>
+          <h1 className="text-2xl font-headline font-bold">Portfolio Live Preview</h1>
+          <p className="text-sm text-muted-foreground">This is exactly how your portfolio will look to recruiters.</p>
+        </div>
         <div className="flex gap-2 w-full md:w-auto">
-          <Button onClick={handleSave} variant="outline" className="gap-2 flex-1 md:flex-none">
+          <Button onClick={handleSaveSnapshot} variant="outline" className="gap-2 flex-1 md:flex-none">
             <Save className="w-4 h-4" /> Save Snapshot
           </Button>
-          <Button onClick={handlePrint} className="gap-2 flex-1 md:flex-none">
+          <Button onClick={handlePrint} className="gap-2 flex-1 md:flex-none bg-secondary hover:bg-secondary/90 text-secondary-foreground">
             <Download className="w-4 h-4" /> Print / Save PDF
           </Button>
           <Button onClick={resetData} variant="destructive" className="gap-2 flex-1 md:flex-none">
@@ -38,7 +45,7 @@ export default function PreviewPage() {
         </div>
       </div>
 
-      <div className="bg-white text-slate-900 shadow-2xl rounded-2xl overflow-hidden border border-slate-200 mx-auto max-w-5xl print:shadow-none print:border-none print:m-0 print:max-w-none print-bg-white">
+      <div className="resume-container bg-white text-slate-900 shadow-2xl rounded-2xl overflow-hidden border border-slate-200 mx-auto max-w-5xl print:shadow-none print:border-none print:m-0 print:max-w-none print-bg-white">
         {/* Header Section */}
         <div className="bg-slate-900 text-white p-8 md:p-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] -mr-32 -mt-32"></div>
@@ -89,7 +96,7 @@ export default function PreviewPage() {
                 <h3 className="text-2xl font-headline font-bold border-l-4 border-primary pl-4">Experience</h3>
                 <div className="space-y-8">
                   {data.experience.map((job) => (
-                    <div key={job.id} className="relative pl-8 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-primary before:rounded-full before:z-10 after:absolute after:left-[5px] after:top-4 after:bottom-0 after:w-[2px] after:bg-slate-100 last:after:hidden">
+                    <div key={job.id} className="experience-item relative pl-8 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-primary before:rounded-full before:z-10 after:absolute after:left-[5px] after:top-4 after:bottom-0 after:w-[2px] after:bg-slate-100 last:after:hidden">
                       <div className="flex flex-wrap justify-between items-baseline mb-2">
                         <h4 className="text-xl font-bold text-slate-900">{job.position}</h4>
                         <span className="text-sm font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">{job.startDate || '20XX'} - {job.endDate || 'Present'}</span>
@@ -111,7 +118,7 @@ export default function PreviewPage() {
                 <h3 className="text-2xl font-headline font-bold border-l-4 border-primary pl-4">Projects</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {data.projects.map((proj) => (
-                    <Card key={proj.id} className="overflow-hidden border-slate-200 group hover:shadow-lg transition-shadow bg-slate-50/50">
+                    <Card key={proj.id} className="project-item overflow-hidden border-slate-200 group hover:shadow-lg transition-shadow bg-slate-50/50">
                       <div className="aspect-video relative bg-slate-200 overflow-hidden">
                         {proj.imageUrl ? (
                           <Image src={proj.imageUrl} alt={proj.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
@@ -162,7 +169,7 @@ export default function PreviewPage() {
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {data.about.strengths.map((s, i) => (
-                    <Badge key={i} className="bg-slate-100 text-slate-800 hover:bg-primary hover:text-white transition-colors border-none">{s}</Badge>
+                    <Badge key={i} className="bg-slate-100 text-slate-800 hover:bg-primary hover:text-primary-foreground transition-colors border-none">{s}</Badge>
                   ))}
                 </div>
               </section>
