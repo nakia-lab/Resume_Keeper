@@ -37,11 +37,10 @@ const prompt = ai.definePrompt({
   name: 'generateAboutPrompt',
   input: {schema: GenerateAboutInputSchema},
   output: {schema: GenerateAboutOutputSchema},
-  prompt:
-    'You are a professional resume writer. Your task is to craft compelling and concise personal statements for a resume.
+  prompt: `You are a professional resume writer. Your task is to craft compelling and concise personal statements for a resume.
 
     Based on the following information, generate two pieces of text:
-    1. A "longAbout" paragraph: This should be a professional "About" section, between 80 and 120 words long, highlighting the user\u0027s experience, skills, and aspirations. Avoid using first-person pronouns like "I" or "my" unless explicitly asked to in the tone.
+    1. A "longAbout" paragraph: This should be a professional "About" section, between 80 and 120 words long, highlighting the user's experience, skills, and aspirations. Avoid using first-person pronouns like "I" or "my" unless explicitly asked to in the tone.
     2. A "shortBio" sentence: This should be a very concise, 1-2 sentence summary suitable for a quick introduction.
 
     Ensure the output is in JSON format matching the provided schema.
@@ -53,7 +52,7 @@ const prompt = ai.definePrompt({
     Achievements: {{{achievements}}}
     Desired Tone: {{{tone}}}
 
-    Generate the JSON output:',
+    Generate the JSON output:`,
 });
 
 const generateAboutFlow = ai.defineFlow(
