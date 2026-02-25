@@ -16,6 +16,7 @@ interface ResumeContextType {
   addProject: (proj: Project) => void;
   updateProject: (id: string, proj: Partial<Project>) => void;
   removeProject: (id: string) => void;
+  resetData: () => void;
 }
 
 const initialData: ResumeData = {
@@ -125,6 +126,13 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
+  const resetData = () => {
+    if (confirm("Are you sure you want to delete ALL data? This cannot be undone.")) {
+      setData(initialData);
+      localStorage.removeItem('resume-keeper-data');
+    }
+  };
+
   return (
     <ResumeContext.Provider
       value={{
@@ -140,6 +148,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         addProject,
         updateProject,
         removeProject,
+        resetData,
       }}
     >
       {children}

@@ -8,12 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Trash2, Wand2, Loader2, Link as LinkIcon, FileUp, Globe } from 'lucide-react';
+import { Plus, Trash2, Wand2, Loader2, Link as LinkIcon, FileUp, Globe, Save } from 'lucide-react';
 import { generateProjectSummaryAndBullets } from '@/ai/flows/generate-project-summary-bullets-flow';
 import Image from 'next/image';
 
 export default function ProjectsPage() {
-  const { data, addProject, updateProject, removeProject } = useResume();
+  const { data, addProject, updateProject, removeProject, resetData } = useResume();
   const { toast } = useToast();
   const [generatingId, setGeneratingId] = useState<string | null>(null);
 
@@ -29,6 +29,18 @@ export default function ProjectsPage() {
       summary: '',
       bullets: ['', '', '']
     });
+  };
+
+  const handleFileUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateProject(id, { imageUrl: reader.result as string });
+        toast({ title: "Photo Uploaded", description: "Project image updated successfully." });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const onGenerateProjectAI = async (id: string) => {
@@ -60,16 +72,28 @@ export default function ProjectsPage() {
     }
   };
 
+  const handleSaveAll = () => {
+    toast({ title: "Projects Saved", description: "Your project portfolio is up to date." });
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <header className="flex justify-between items-end">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-3xl font-headline font-bold">Projects Portfolio</h1>
-          <p className="text-muted-foreground">Showcase your best work with evidence links and AI summaries.</p>
+          <p className="text-muted-foreground">Showcase your best work with evidence links, photos, and AI summaries.</p>
         </div>
-        <Button onClick={onAddProject} className="gap-2">
-          <Plus className="w-4 h-4" /> Add Project
-        </Button>
+        <div className="flex gap-2 w-full md:w-auto">
+          <Button onClick={onAddProject} className="gap-2 flex-1 md:flex-none">
+            <Plus className="w-4 h-4" /> Add Project
+          </Button>
+          <Button onClick={handleSaveAll} variant="outline" className="gap-2 flex-1 md:flex-none">
+            <Save className="w-4 h-4" /> Save All
+          </Button>
+          <Button onClick={resetData} variant="destructive" className="gap-2 flex-1 md:flex-none">
+            <Trash2 className="w-4 h-4" /> Clear All
+          </Button>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 gap-8">
@@ -85,48 +109,74 @@ export default function ProjectsPage() {
             </Button>
             <div className="grid grid-cols-1 lg:grid-cols-3">
               <div className="p-6 bg-muted/30 border-r border-border space-y-4">
-                <div className="aspect-video bg-muted rounded-lg relative overflow-hidden flex items-center justify-center border-2 border-dashed border-border group/img">
+                <div className="aspect-video bg-muted rounded-lg relative overflow-hidden flex flex-col items-center justify-center border-2 border-dashed border-border group/img">
                   {project.imageUrl ? (
                     <Image 
                       src={project.imageUrl} 
                       alt={project.name} 
                       fill 
                       className="object-cover" 
-                      data-ai-hint="project visual"
+                      unoptimized
                     />
                   ) : (
                     <div className="text-center p-4">
                       <FileUp className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">Add image URL below</p>
+                      <p className="text-xs text-muted-foreground">No image added</p>
                     </div>
                   )}
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs uppercase font-bold text-muted-foreground">Project Visual</Label>
-                  <Input 
-                    placeholder="Image URL (Unsplash/Picsum)" 
-                    value={project.imageUrl} 
-                    onChange={e => updateProject(project.id, { imageUrl: e.target.value })} 
+                  <input 
+                    type="file" 
+                    id={`file-${project.id}`} 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(project.id, e)}
                   />
+                  <Label 
+                    htmlFor={`file-${project.id}`} 
+                    className="absolute inset-0 cursor-pointer flex items-center justify-center bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity text-white text-xs gap-2"
+                  >
+                    <FileUp className="w-4 h-4" /> Change Photo
+                  </Label>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-xs uppercase font-bold text-muted-foreground">Links</Label>
+                
+                <div className="space-y-4 pt-2">
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
-                      <Input 
-                        placeholder="Live Evidence/URL" 
-                        value={project.evidenceUrl} 
-                        onChange={e => updateProject(project.id, { evidenceUrl: e.target.value })} 
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <LinkIcon className="w-4 h-4 text-muted-foreground shrink-0" />
-                      <Input 
-                        placeholder="Firebase/GitHub Link" 
-                        value={project.firebaseUrl} 
-                        onChange={e => updateProject(project.id, { firebaseUrl: e.target.value })} 
-                      />
+                    <Label className="text-xs uppercase font-bold text-muted-foreground">Upload Work Example</Label>
+                    <Button variant="outline" size="sm" className="w-full gap-2" asChild>
+                      <Label htmlFor={`file-${project.id}`} className="cursor-pointer">
+                        <FileUp className="w-4 h-4" /> Browse Photo
+                      </Label>
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-xs uppercase font-bold text-muted-foreground">Or Paste Image URL Below</Label>
+                    <Input 
+                      placeholder="https://images.unsplash.com/..." 
+                      value={project.imageUrl} 
+                      onChange={e => updateProject(project.id, { imageUrl: e.target.value })} 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs uppercase font-bold text-muted-foreground">Links</Label>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <Input 
+                          placeholder="Live Evidence/URL" 
+                          value={project.evidenceUrl} 
+                          onChange={e => updateProject(project.id, { evidenceUrl: e.target.value })} 
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <LinkIcon className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <Input 
+                          placeholder="Firebase/GitHub Link" 
+                          value={project.firebaseUrl} 
+                          onChange={e => updateProject(project.id, { firebaseUrl: e.target.value })} 
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -177,6 +227,7 @@ export default function ProjectsPage() {
                     value={project.summary} 
                     onChange={e => updateProject(project.id, { summary: e.target.value })}
                     placeholder="Draft summary or AI output will appear here..."
+                    className="min-h-[100px]"
                   />
                 </div>
 

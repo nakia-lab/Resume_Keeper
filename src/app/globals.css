@@ -62,3 +62,16 @@
     @apply bg-background text-foreground font-body;
   }
 }
+
+@media print {
+  nav, .print-hidden, button {
+    display: none !important;
+  }
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .print-bg-white {
+    background-color: white !important;
+  }
+}

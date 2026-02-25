@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useResume } from '@/context/ResumeContext';
 import { useToast } from '@/hooks/use-toast';
-import { Sparkles, Plus, Trash2, Wand2, Loader2 } from 'lucide-react';
+import { Sparkles, Plus, Trash2, Wand2, Loader2, Save } from 'lucide-react';
 import { generateAbout } from '@/ai/flows/generate-about-section-flow';
 import { rewriteResponsibilities } from '@/ai/flows/rewrite-job-responsibilities-flow';
 
@@ -19,7 +19,18 @@ export default function ProfilePage() {
   const router = useRouter();
   const { toast } = useToast();
   const activeTab = searchParams.get('tab') || 'basics';
-  const { data, updateBasics, updateAbout, addJob, updateJob, removeJob, addEducation, updateEducation, removeEducation } = useResume();
+  const { 
+    data, 
+    updateBasics, 
+    updateAbout, 
+    addJob, 
+    updateJob, 
+    removeJob, 
+    addEducation, 
+    updateEducation, 
+    removeEducation,
+    resetData 
+  } = useResume();
 
   const [isGeneratingAbout, setIsGeneratingAbout] = useState(false);
   const [rewritingJobId, setRewritingJobId] = useState<string | null>(null);
@@ -70,11 +81,25 @@ export default function ProfilePage() {
     }
   };
 
+  const handleSaveAll = () => {
+    toast({ title: "All Changes Saved", description: "Your profile information has been updated." });
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <header>
-        <h1 className="text-3xl font-headline font-bold">Profile Settings</h1>
-        <p className="text-muted-foreground">Manage your background and professional details.</p>
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-headline font-bold">Profile Settings</h1>
+          <p className="text-muted-foreground">Manage your background and professional details.</p>
+        </div>
+        <div className="flex gap-2 w-full md:w-auto">
+          <Button onClick={handleSaveAll} variant="default" className="gap-2 flex-1 md:flex-none">
+            <Save className="w-4 h-4" /> Save Profile
+          </Button>
+          <Button onClick={resetData} variant="destructive" className="gap-2 flex-1 md:flex-none">
+            <Trash2 className="w-4 h-4" /> Delete Data
+          </Button>
+        </div>
       </header>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
@@ -137,8 +162,13 @@ export default function ProfilePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Short Bio (1-2 sentences)</Label>
-                  <Input value={data.about.shortBio} onChange={e => updateAbout({ shortBio: e.target.value })} />
+                  <Label>Short Bio (Elevator Pitch)</Label>
+                  <Textarea 
+                    className="min-h-[100px] text-lg" 
+                    placeholder="Brief 1-2 sentence introduction..."
+                    value={data.about.shortBio} 
+                    onChange={e => updateAbout({ shortBio: e.target.value })} 
+                  />
                 </div>
               </CardContent>
             </Card>
