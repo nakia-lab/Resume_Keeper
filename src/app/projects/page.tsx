@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Trash2, Wand2, Loader2, Link as LinkIcon, FileUp, Globe, Save, Maximize2 } from 'lucide-react';
+import { Plus, Trash2, Wand2, Loader2, Link as LinkIcon, FileUp, Globe, Save, Maximize2, Briefcase } from 'lucide-react';
 import { generateProjectSummaryAndBullets } from '@/ai/flows/generate-project-summary-bullets-flow';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
@@ -75,7 +75,8 @@ export default function ProjectsPage() {
   };
 
   const handleSaveAll = () => {
-    toast({ title: "Projects Saved", description: "Your project portfolio is up to date." });
+    localStorage.setItem('resume-keeper-data', JSON.stringify(data));
+    toast({ title: "Projects Saved", description: "Your project portfolio is updated and secured." });
   };
 
   return (
@@ -86,10 +87,10 @@ export default function ProjectsPage() {
           <p className="text-muted-foreground">Showcase your best work with evidence links and AI summaries.</p>
         </div>
         <div className="flex gap-2 w-full md:w-auto">
-          <Button onClick={onAddProject} className="gap-2 flex-1 md:flex-none">
+          <Button onClick={onAddProject} className="gap-2 flex-1 md:flex-none shadow-md">
             <Plus className="w-4 h-4" /> Add Project
           </Button>
-          <Button onClick={handleSaveAll} variant="outline" className="gap-2 flex-1 md:flex-none">
+          <Button onClick={handleSaveAll} variant="outline" className="gap-2 flex-1 md:flex-none bg-white/50 shadow-sm">
             <Save className="w-4 h-4" /> Save Snapshot
           </Button>
         </div>
@@ -97,21 +98,21 @@ export default function ProjectsPage() {
 
       <div className="grid grid-cols-1 gap-8">
         {data.projects.map((project) => (
-          <Card key={project.id} className="relative group overflow-hidden border-2 hover:border-primary/20 transition-all">
+          <Card key={project.id} className="relative group overflow-hidden border-2 border-white/40 bg-white/60 backdrop-blur-lg hover:border-primary/40 transition-all shadow-xl">
             <div className="absolute top-2 right-2 z-10 flex gap-2">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="secondary" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button variant="secondary" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80">
                     <Maximize2 className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-2xl">
                   <DialogHeader>
-                    <DialogTitle className="text-3xl font-bold">{project.name}</DialogTitle>
-                    <DialogDescription className="text-lg text-primary font-medium">{project.role}</DialogDescription>
+                    <DialogTitle className="text-3xl font-bold">{project.name || 'Project Detail'}</DialogTitle>
+                    <DialogDescription className="text-lg text-primary font-medium">{project.role || 'Role'}</DialogDescription>
                   </DialogHeader>
                   <div className="space-y-6 pt-4">
-                    <div className="aspect-video relative rounded-xl overflow-hidden bg-muted">
+                    <div className="aspect-video relative rounded-xl overflow-hidden bg-muted shadow-inner">
                       {project.imageUrl ? (
                         <Image src={project.imageUrl} alt={project.name} fill className="object-cover" unoptimized />
                       ) : (
@@ -121,16 +122,16 @@ export default function ProjectsPage() {
                       )}
                     </div>
                     <div className="space-y-4">
-                      <h4 className="text-xl font-bold border-b pb-2">Overview</h4>
+                      <h4 className="text-xl font-bold border-b border-primary/20 pb-2">Overview</h4>
                       <p className="text-lg leading-relaxed">{project.summary || 'No summary provided yet.'}</p>
                       <div className="flex flex-wrap gap-2">
                         {project.techStack.map((tech, i) => (
-                          <Badge key={i} variant="outline" className="bg-primary/5">{tech}</Badge>
+                          <Badge key={i} variant="outline" className="bg-primary/5 border-primary/20">{tech}</Badge>
                         ))}
                       </div>
                     </div>
                     <div className="space-y-4">
-                      <h4 className="text-xl font-bold border-b pb-2">Key Highlights</h4>
+                      <h4 className="text-xl font-bold border-b border-primary/20 pb-2">Key Highlights</h4>
                       <ul className="list-disc list-inside space-y-2 text-lg">
                         {project.bullets.filter(b => b.trim() !== '').map((b, i) => (
                           <li key={i}>{b}</li>
@@ -151,8 +152,8 @@ export default function ProjectsPage() {
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-3">
-              <div className="p-6 bg-muted/30 border-r border-border space-y-4">
-                <div className="aspect-video bg-muted rounded-lg relative overflow-hidden flex flex-col items-center justify-center border-2 border-dashed border-border group/img">
+              <div className="p-6 bg-white/30 border-r border-white/20 space-y-4">
+                <div className="aspect-video bg-white/40 rounded-lg relative overflow-hidden flex flex-col items-center justify-center border-2 border-dashed border-white/60 group/img shadow-inner">
                   {project.imageUrl ? (
                     <Image src={project.imageUrl} alt={project.name} fill className="object-cover" unoptimized />
                   ) : (
@@ -184,7 +185,7 @@ export default function ProjectsPage() {
                         <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
                         <Input 
                           placeholder="Evidence URL" 
-                          value={project.evidenceUrl} 
+                          value={project.evidenceUrl || ''} 
                           onChange={e => updateProject(project.id, { evidenceUrl: e.target.value })} 
                         />
                       </div>
@@ -192,7 +193,7 @@ export default function ProjectsPage() {
                         <LinkIcon className="w-4 h-4 text-muted-foreground shrink-0" />
                         <Input 
                           placeholder="Firebase/Code" 
-                          value={project.firebaseUrl} 
+                          value={project.firebaseUrl || ''} 
                           onChange={e => updateProject(project.id, { firebaseUrl: e.target.value })} 
                         />
                       </div>
@@ -206,14 +207,14 @@ export default function ProjectsPage() {
                   <div className="space-y-2">
                     <Label>Project Name</Label>
                     <Input 
-                      value={project.name} 
+                      value={project.name || ''} 
                       onChange={e => updateProject(project.id, { name: e.target.value })} 
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Your Role</Label>
                     <Input 
-                      value={project.role} 
+                      value={project.role || ''} 
                       onChange={e => updateProject(project.id, { role: e.target.value })} 
                     />
                   </div>
@@ -223,7 +224,7 @@ export default function ProjectsPage() {
                   <Label>Tech Stack (comma separated)</Label>
                   <Input 
                     placeholder="React, Firebase, Tailwind" 
-                    value={project.techStack.join(', ')} 
+                    value={project.techStack.join(', ') || ''} 
                     onChange={e => updateProject(project.id, { techStack: e.target.value.split(',').map(s => s.trim()) })} 
                   />
                 </div>
@@ -234,7 +235,7 @@ export default function ProjectsPage() {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="gap-2 border-primary/40 h-8"
+                      className="gap-2 border-primary/40 h-8 bg-white/50"
                       onClick={() => onGenerateProjectAI(project.id)}
                       disabled={generatingId === project.id}
                     >
@@ -243,10 +244,10 @@ export default function ProjectsPage() {
                     </Button>
                   </div>
                   <Textarea 
-                    value={project.summary} 
+                    value={project.summary || ''} 
                     onChange={e => updateProject(project.id, { summary: e.target.value })}
                     placeholder="Describe your project..."
-                    className="min-h-[100px]"
+                    className="min-h-[120px] bg-white/50"
                   />
                 </div>
 
@@ -256,7 +257,7 @@ export default function ProjectsPage() {
                     {project.bullets.map((bullet, idx) => (
                       <Input 
                         key={idx}
-                        value={bullet}
+                        value={bullet || ''}
                         onChange={e => {
                           const newBullets = [...project.bullets] as [string, string, string];
                           newBullets[idx] = e.target.value;
@@ -272,16 +273,14 @@ export default function ProjectsPage() {
           </Card>
         ))}
         {data.projects.length === 0 && (
-          <div className="text-center py-20 border-2 border-dashed border-border rounded-xl">
+          <div className="text-center py-20 border-2 border-dashed border-white/60 rounded-xl bg-white/20 backdrop-blur-md">
             <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-bold">Showcase your work</h3>
             <p className="text-muted-foreground mb-6">Add projects to demonstrate your skills in action.</p>
-            <Button onClick={onAddProject} size="lg">Add My First Project</Button>
+            <Button onClick={onAddProject} size="lg" className="shadow-lg">Add My First Project</Button>
           </div>
         )}
       </div>
     </div>
   );
 }
-
-import { Briefcase } from 'lucide-react';

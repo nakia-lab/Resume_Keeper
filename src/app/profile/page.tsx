@@ -59,7 +59,7 @@ export default function ProfilePage() {
     }
   };
 
-  const onRewriteBullets = async (jobId: string) => {
+  const onRewriteResponsibilities = async (jobId: string) => {
     const job = data.experience.find(j => j.id === jobId);
     if (!job) return;
 
@@ -81,7 +81,8 @@ export default function ProfilePage() {
   };
 
   const handleSaveAll = () => {
-    toast({ title: "Profile Saved", description: "Your professional data has been updated." });
+    localStorage.setItem('resume-keeper-data', JSON.stringify(data));
+    toast({ title: "Profile Saved", description: "Your professional data has been updated and secured." });
   };
 
   return (
@@ -92,14 +93,14 @@ export default function ProfilePage() {
           <p className="text-muted-foreground">Manage your background and professional details.</p>
         </div>
         <div className="flex gap-2 w-full md:w-auto">
-          <Button onClick={handleSaveAll} variant="default" className="gap-2 flex-1 md:flex-none">
+          <Button onClick={handleSaveAll} variant="default" className="gap-2 flex-1 md:flex-none shadow-lg">
             <Save className="w-4 h-4" /> Save Profile
           </Button>
         </div>
       </header>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid grid-cols-4 w-full mb-8">
+        <TabsList className="grid grid-cols-4 w-full mb-8 bg-white/20 backdrop-blur-md">
           <TabsTrigger value="basics">Basics</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
           <TabsTrigger value="experience">Experience</TabsTrigger>
@@ -107,7 +108,7 @@ export default function ProfilePage() {
         </TabsList>
 
         <TabsContent value="basics">
-          <Card>
+          <Card className="bg-white/60 backdrop-blur-lg border-white/40">
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
               <CardDescription>Core details recruiters use to find and contact you.</CardDescription>
@@ -116,36 +117,36 @@ export default function ProfilePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label>Full Name</Label>
-                  <Input value={data.basics.name} onChange={e => updateBasics({ name: e.target.value })} placeholder="John Doe" />
+                  <Input value={data.basics.name || ''} onChange={e => updateBasics({ name: e.target.value })} placeholder="John Doe" />
                 </div>
                 <div className="space-y-2">
                   <Label>Professional Label</Label>
-                  <Input value={data.basics.label} onChange={e => updateBasics({ label: e.target.value })} placeholder="Senior Developer" />
+                  <Input value={data.basics.label || ''} onChange={e => updateBasics({ label: e.target.value })} placeholder="Senior Developer" />
                 </div>
                 <div className="space-y-2">
                   <Label>Email</Label>
-                  <Input value={data.basics.email} onChange={e => updateBasics({ email: e.target.value })} placeholder="john@example.com" />
+                  <Input value={data.basics.email || ''} onChange={e => updateBasics({ email: e.target.value })} placeholder="john@example.com" />
                 </div>
                 <div className="space-y-2">
                   <Label>Phone</Label>
-                  <Input value={data.basics.phone} onChange={e => updateBasics({ phone: e.target.value })} placeholder="+1 234 567 890" />
+                  <Input value={data.basics.phone || ''} onChange={e => updateBasics({ phone: e.target.value })} placeholder="+1 234 567 890" />
                 </div>
                 <div className="space-y-2">
                   <Label>Location</Label>
-                  <Input value={data.basics.location} onChange={e => updateBasics({ location: e.target.value })} placeholder="San Francisco, CA" />
+                  <Input value={data.basics.location || ''} onChange={e => updateBasics({ location: e.target.value })} placeholder="San Francisco, CA" />
                 </div>
               </div>
 
-              <div className="pt-4 border-t">
+              <div className="pt-4 border-t border-white/20">
                 <h3 className="font-semibold mb-4 text-primary">Social Profiles</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2"><Linkedin className="w-4 h-4" /> LinkedIn URL</Label>
-                    <Input value={data.basics.linkedin} onChange={e => updateBasics({ linkedin: e.target.value })} placeholder="linkedin.com/in/johndoe" />
+                    <Input value={data.basics.linkedin || ''} onChange={e => updateBasics({ linkedin: e.target.value })} placeholder="linkedin.com/in/johndoe" />
                   </div>
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2"><MessageCircle className="w-4 h-4" /> Discord Tag/Link</Label>
-                    <Input value={data.basics.discord} onChange={e => updateBasics({ discord: e.target.value })} placeholder="username#0000" />
+                    <Input value={data.basics.discord || ''} onChange={e => updateBasics({ discord: e.target.value })} placeholder="username#0000" />
                   </div>
                 </div>
               </div>
@@ -155,7 +156,7 @@ export default function ProfilePage() {
 
         <TabsContent value="about">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2">
+            <Card className="lg:col-span-2 bg-white/60 backdrop-blur-lg border-white/40">
               <CardHeader>
                 <CardTitle>The "About" Section</CardTitle>
                 <CardDescription>A professional summary that captures your essence.</CardDescription>
@@ -164,24 +165,24 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <Label>Short Bio (Elevator Pitch)</Label>
                   <Textarea 
-                    className="min-h-[100px] text-lg" 
+                    className="min-h-[120px] text-lg bg-white/50" 
                     placeholder="Brief 1-2 sentence introduction..."
-                    value={data.about.shortBio} 
+                    value={data.about.shortBio || ''} 
                     onChange={e => updateAbout({ shortBio: e.target.value })} 
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Long About (80-120 words)</Label>
                   <Textarea 
-                    className="min-h-[180px]" 
-                    value={data.about.longAbout} 
+                    className="min-h-[220px] bg-white/50" 
+                    value={data.about.longAbout || ''} 
                     onChange={e => updateAbout({ longAbout: e.target.value })}
                   />
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-white/60 backdrop-blur-lg border-white/40">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" />
@@ -194,7 +195,7 @@ export default function ProfilePage() {
                   <Label>Target Roles</Label>
                   <Input 
                     placeholder="UI Designer, Frontend Engineer" 
-                    value={data.about.targetRoles.join(', ')} 
+                    value={data.about.targetRoles.join(', ') || ''} 
                     onChange={e => updateAbout({ targetRoles: e.target.value.split(',').map(s => s.trim()) })} 
                   />
                 </div>
@@ -202,13 +203,13 @@ export default function ProfilePage() {
                   <Label>Strengths</Label>
                   <Input 
                     placeholder="Swift, React, Leadership" 
-                    value={data.about.strengths.join(', ')} 
+                    value={data.about.strengths.join(', ') || ''} 
                     onChange={e => updateAbout({ strengths: e.target.value.split(',').map(s => s.trim()) })} 
                   />
                 </div>
                 <Button 
                   onClick={onGenerateAbout} 
-                  className="w-full gap-2" 
+                  className="w-full gap-2 shadow-md" 
                   disabled={isGeneratingAbout}
                 >
                   {isGeneratingAbout ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
@@ -230,13 +231,13 @@ export default function ProfilePage() {
                 startDate: '',
                 endDate: '',
                 responsibilities: ['', '', '']
-              })} className="gap-2">
+              })} className="gap-2 shadow-md">
                 <Plus className="w-4 h-4" /> Add Job
               </Button>
             </div>
 
             {data.experience.map((job) => (
-              <Card key={job.id} className="relative group">
+              <Card key={job.id} className="relative group bg-white/60 backdrop-blur-lg border-white/40">
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -249,11 +250,11 @@ export default function ProfilePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Company</Label>
-                      <Input value={job.company} onChange={e => updateJob(job.id, { company: e.target.value })} />
+                      <Input value={job.company || ''} onChange={e => updateJob(job.id, { company: e.target.value })} />
                     </div>
                     <div className="space-y-2">
                       <Label>Position</Label>
-                      <Input value={job.position} onChange={e => updateJob(job.id, { position: e.target.value })} />
+                      <Input value={job.position || ''} onChange={e => updateJob(job.id, { position: e.target.value })} />
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -262,8 +263,8 @@ export default function ProfilePage() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-8 gap-2 border-primary/50"
-                        onClick={() => onRewriteBullets(job.id)}
+                        className="h-8 gap-2 border-primary/50 bg-white/50"
+                        onClick={() => onRewriteResponsibilities(job.id)}
                         disabled={rewritingJobId === job.id}
                       >
                         {rewritingJobId === job.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
@@ -273,7 +274,7 @@ export default function ProfilePage() {
                     {job.responsibilities.map((resp, idx) => (
                       <Input 
                         key={idx} 
-                        value={resp} 
+                        value={resp || ''} 
                         placeholder={`Bullet point ${idx + 1}`}
                         onChange={e => {
                           const newResps = [...job.responsibilities] as [string, string, string];
@@ -300,13 +301,13 @@ export default function ProfilePage() {
                 studyType: 'Degree',
                 startDate: '',
                 endDate: ''
-              })} className="gap-2">
+              })} className="gap-2 shadow-md">
                 <Plus className="w-4 h-4" /> Add Education
               </Button>
             </div>
 
             {data.education.map((edu) => (
-              <Card key={edu.id} className="relative group">
+              <Card key={edu.id} className="relative group bg-white/60 backdrop-blur-lg border-white/40">
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -319,14 +320,14 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <Label>Institution</Label>
                     <Input 
-                      value={edu.institution} 
+                      value={edu.institution || ''} 
                       onChange={e => updateEducation(edu.id, { institution: e.target.value })} 
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Degree Type</Label>
                     <Input 
-                      value={edu.studyType} 
+                      value={edu.studyType || ''} 
                       placeholder="Bachelor of Science" 
                       onChange={e => updateEducation(edu.id, { studyType: e.target.value })} 
                     />
@@ -334,7 +335,7 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <Label>Field of Study</Label>
                     <Input 
-                      value={edu.area} 
+                      value={edu.area || ''} 
                       placeholder="Computer Science" 
                       onChange={e => updateEducation(edu.id, { area: e.target.value })} 
                     />
