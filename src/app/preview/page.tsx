@@ -4,7 +4,7 @@ import { useResume } from '@/context/ResumeContext';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mail, Phone, MapPin, Linkedin, Globe, ExternalLink, Sparkles, Link as LinkIcon, Save, MessageCircle, Maximize2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Globe, ExternalLink, Sparkles, Link as LinkIcon, Save, Gamepad2, Maximize2 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
@@ -63,7 +63,7 @@ export default function PreviewPage() {
                 <div className="flex items-center gap-1.5"><Linkedin className="w-4 h-4" /> {data.basics.linkedin}</div>
               )}
               {data.basics.discord && (
-                <div className="flex items-center gap-1.5"><MessageCircle className="w-4 h-4" /> {data.basics.discord}</div>
+                <div className="flex items-center gap-1.5"><Gamepad2 className="w-4 h-4" /> {data.basics.discord}</div>
               )}
             </div>
           </div>

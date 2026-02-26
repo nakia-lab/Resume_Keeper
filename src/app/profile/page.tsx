@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useResume } from '@/context/ResumeContext';
 import { useToast } from '@/hooks/use-toast';
-import { Sparkles, Plus, Trash2, Wand2, Loader2, Save, MessageCircle, Linkedin } from 'lucide-react';
+import { Sparkles, Plus, Trash2, Wand2, Loader2, Save, Gamepad2, Linkedin } from 'lucide-react';
 import { generateAbout } from '@/ai/flows/generate-about-section-flow';
 import { rewriteResponsibilities } from '@/ai/flows/rewrite-job-responsibilities-flow';
 
@@ -100,53 +100,53 @@ export default function ProfilePage() {
       </header>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid grid-cols-4 w-full mb-8 bg-white/20 backdrop-blur-2xl p-1.5 rounded-2xl border border-white/40 shadow-lg">
-          <TabsTrigger value="basics" className="rounded-xl data-[state=active]:bg-white/50 data-[state=active]:shadow-md">Basics</TabsTrigger>
-          <TabsTrigger value="about" className="rounded-xl data-[state=active]:bg-white/50 data-[state=active]:shadow-md">About</TabsTrigger>
-          <TabsTrigger value="experience" className="rounded-xl data-[state=active]:bg-white/50 data-[state=active]:shadow-md">Experience</TabsTrigger>
-          <TabsTrigger value="education" className="rounded-xl data-[state=active]:bg-white/50 data-[state=active]:shadow-md">Education</TabsTrigger>
+        <TabsList className="grid grid-cols-4 w-full mb-8 bg-white/10 backdrop-blur-2xl p-1.5 rounded-2xl border border-white/30 shadow-lg">
+          <TabsTrigger value="basics" className="rounded-xl data-[state=active]:bg-white/40 data-[state=active]:shadow-md">Basics</TabsTrigger>
+          <TabsTrigger value="about" className="rounded-xl data-[state=active]:bg-white/40 data-[state=active]:shadow-md">About</TabsTrigger>
+          <TabsTrigger value="experience" className="rounded-xl data-[state=active]:bg-white/40 data-[state=active]:shadow-md">Experience</TabsTrigger>
+          <TabsTrigger value="education" className="rounded-xl data-[state=active]:bg-white/40 data-[state=active]:shadow-md">Education</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basics">
-          <Card className="bg-white/20 backdrop-blur-3xl border-white/60 shadow-2xl rounded-[2rem]">
+          <Card className="bg-white/10 backdrop-blur-3xl border-white/40 shadow-2xl rounded-[2rem]">
             <CardHeader>
               <CardTitle className="text-2xl">Basic Information</CardTitle>
-              <CardDescription className="text-base">Core details recruiters use to find and contact you.</CardDescription>
+              <CardDescription className="text-base text-foreground/70">Core details recruiters use to find and contact you.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label className="text-foreground/80">Full Name</Label>
-                  <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={data.basics.name || ''} onChange={e => updateBasics({ name: e.target.value })} placeholder="John Doe" />
+                  <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={data.basics.name || ''} onChange={e => updateBasics({ name: e.target.value })} placeholder="John Doe" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-foreground/80">Professional Label</Label>
-                  <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={data.basics.label || ''} onChange={e => updateBasics({ label: e.target.value })} placeholder="Senior Developer" />
+                  <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={data.basics.label || ''} onChange={e => updateBasics({ label: e.target.value })} placeholder="Senior Developer" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-foreground/80">Email</Label>
-                  <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={data.basics.email || ''} onChange={e => updateBasics({ email: e.target.value })} placeholder="john@example.com" />
+                  <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={data.basics.email || ''} onChange={e => updateBasics({ email: e.target.value })} placeholder="john@example.com" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-foreground/80">Phone</Label>
-                  <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={data.basics.phone || ''} onChange={e => updateBasics({ phone: e.target.value })} placeholder="+1 234 567 890" />
+                  <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={data.basics.phone || ''} onChange={e => updateBasics({ phone: e.target.value })} placeholder="+1 234 567 890" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-foreground/80">Location</Label>
-                  <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={data.basics.location || ''} onChange={e => updateBasics({ location: e.target.value })} placeholder="San Francisco, CA" />
+                  <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={data.basics.location || ''} onChange={e => updateBasics({ location: e.target.value })} placeholder="San Francisco, CA" />
                 </div>
               </div>
 
-              <div className="pt-8 border-t border-white/30">
+              <div className="pt-8 border-t border-white/20">
                 <h3 className="text-xl font-bold mb-6 text-primary drop-shadow-sm flex items-center gap-2">Social Profiles</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2 text-foreground/80"><Linkedin className="w-5 h-5 text-primary" /> LinkedIn URL</Label>
-                    <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={data.basics.linkedin || ''} onChange={e => updateBasics({ linkedin: e.target.value })} placeholder="linkedin.com/in/johndoe" />
+                    <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={data.basics.linkedin || ''} onChange={e => updateBasics({ linkedin: e.target.value })} placeholder="linkedin.com/in/johndoe" />
                   </div>
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-foreground/80"><MessageCircle className="w-5 h-5 text-primary" /> Discord Tag/Link</Label>
-                    <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={data.basics.discord || ''} onChange={e => updateBasics({ discord: e.target.value })} placeholder="username#0000" />
+                    <Label className="flex items-center gap-2 text-foreground/80"><Gamepad2 className="w-5 h-5 text-primary" /> Discord Tag/Link</Label>
+                    <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={data.basics.discord || ''} onChange={e => updateBasics({ discord: e.target.value })} placeholder="username#0000" />
                   </div>
                 </div>
               </div>
@@ -156,16 +156,16 @@ export default function ProfilePage() {
 
         <TabsContent value="about">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <Card className="lg:col-span-2 bg-white/20 backdrop-blur-3xl border-white/60 shadow-2xl rounded-[2rem]">
+            <Card className="lg:col-span-2 bg-white/10 backdrop-blur-3xl border-white/40 shadow-2xl rounded-[2rem]">
               <CardHeader>
                 <CardTitle className="text-2xl">The "About" Section</CardTitle>
-                <CardDescription className="text-base">A professional summary that captures your essence.</CardDescription>
+                <CardDescription className="text-base text-foreground/70">A professional summary that captures your essence.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-8">
                 <div className="space-y-2">
                   <Label className="text-foreground/80 text-lg">Short Bio (Elevator Pitch)</Label>
                   <Textarea 
-                    className="min-h-[140px] text-xl bg-white/40 border-white/40 rounded-2xl p-4 focus:bg-white/60 transition-colors" 
+                    className="min-h-[140px] text-xl bg-white/30 border-white/30 rounded-2xl p-4 focus:bg-white/50 transition-colors" 
                     placeholder="Brief 1-2 sentence introduction..."
                     value={data.about.shortBio || ''} 
                     onChange={e => updateAbout({ shortBio: e.target.value })} 
@@ -174,7 +174,7 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <Label className="text-foreground/80 text-lg">Long About (80-120 words)</Label>
                   <Textarea 
-                    className="min-h-[260px] bg-white/40 border-white/40 text-lg rounded-2xl p-4 focus:bg-white/60 transition-colors" 
+                    className="min-h-[260px] bg-white/30 border-white/30 text-lg rounded-2xl p-4 focus:bg-white/50 transition-colors" 
                     value={data.about.longAbout || ''} 
                     onChange={e => updateAbout({ longAbout: e.target.value })}
                   />
@@ -182,19 +182,19 @@ export default function ProfilePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/30 backdrop-blur-3xl border-white/60 shadow-2xl rounded-[2rem] h-fit sticky top-8">
+            <Card className="bg-white/20 backdrop-blur-3xl border-white/40 shadow-2xl rounded-[2rem] h-fit sticky top-8">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl">
                   <Sparkles className="w-6 h-6 text-primary animate-pulse" />
                   AI Assistant
                 </CardTitle>
-                <CardDescription className="text-base">Feed context to AI to generate these sections.</CardDescription>
+                <CardDescription className="text-base text-foreground/70">Feed context to AI to generate these sections.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
                   <Label className="text-foreground/80">Target Roles</Label>
                   <Input 
-                    className="bg-white/40 border-white/40 rounded-xl"
+                    className="bg-white/30 border-white/30 rounded-xl"
                     placeholder="UI Designer, Frontend Engineer" 
                     value={data.about.targetRoles.join(', ') || ''} 
                     onChange={e => updateAbout({ targetRoles: e.target.value.split(',').map(s => s.trim()) })} 
@@ -203,7 +203,7 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <Label className="text-foreground/80">Strengths</Label>
                   <Input 
-                    className="bg-white/40 border-white/40 rounded-xl"
+                    className="bg-white/30 border-white/30 rounded-xl"
                     placeholder="Swift, React, Leadership" 
                     value={data.about.strengths.join(', ') || ''} 
                     onChange={e => updateAbout({ strengths: e.target.value.split(',').map(s => s.trim()) })} 
@@ -239,7 +239,7 @@ export default function ProfilePage() {
             </div>
 
             {data.experience.map((job) => (
-              <Card key={job.id} className="relative group bg-white/20 backdrop-blur-3xl border-white/60 shadow-2xl rounded-[2rem] overflow-hidden">
+              <Card key={job.id} className="relative group bg-white/10 backdrop-blur-3xl border-white/40 shadow-2xl rounded-[2rem] overflow-hidden">
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -252,11 +252,11 @@ export default function ProfilePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label className="text-foreground/80">Company</Label>
-                      <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={job.company || ''} onChange={e => updateJob(job.id, { company: e.target.value })} />
+                      <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={job.company || ''} onChange={e => updateJob(job.id, { company: e.target.value })} />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-foreground/80">Position</Label>
-                      <Input className="bg-white/40 border-white/40 text-lg h-12 rounded-xl" value={job.position || ''} onChange={e => updateJob(job.id, { position: e.target.value })} />
+                      <Input className="bg-white/30 border-white/30 text-lg h-12 rounded-xl" value={job.position || ''} onChange={e => updateJob(job.id, { position: e.target.value })} />
                     </div>
                   </div>
                   <div className="space-y-4">
@@ -265,7 +265,7 @@ export default function ProfilePage() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-10 gap-2 border-primary/50 bg-white/40 hover:bg-white/60 shadow-sm rounded-xl"
+                        className="h-10 gap-2 border-primary/50 bg-white/20 hover:bg-white/40 shadow-sm rounded-xl"
                         onClick={() => onRewriteResponsibilities(job.id)}
                         disabled={rewritingJobId === job.id}
                       >
@@ -277,7 +277,7 @@ export default function ProfilePage() {
                       {job.responsibilities.map((resp, idx) => (
                         <Input 
                           key={idx} 
-                          className="bg-white/40 border-white/40 text-base h-11 rounded-xl focus:bg-white/60 transition-colors"
+                          className="bg-white/30 border-white/30 text-base h-11 rounded-xl focus:bg-white/50 transition-colors"
                           value={resp || ''} 
                           placeholder={`Accomplishment ${idx + 1}...`}
                           onChange={e => {
@@ -312,7 +312,7 @@ export default function ProfilePage() {
             </div>
 
             {data.education.map((edu) => (
-              <Card key={edu.id} className="relative group bg-white/20 backdrop-blur-3xl border-white/60 shadow-2xl rounded-[2rem] overflow-hidden">
+              <Card key={edu.id} className="relative group bg-white/10 backdrop-blur-3xl border-white/40 shadow-2xl rounded-[2rem] overflow-hidden">
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -325,7 +325,7 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <Label className="text-foreground/80">Institution</Label>
                     <Input 
-                      className="bg-white/40 border-white/40 text-lg h-12 rounded-xl"
+                      className="bg-white/30 border-white/30 text-lg h-12 rounded-xl"
                       value={edu.institution || ''} 
                       onChange={e => updateEducation(edu.id, { institution: e.target.value })} 
                     />
@@ -333,7 +333,7 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <Label className="text-foreground/80">Degree Type</Label>
                     <Input 
-                      className="bg-white/40 border-white/40 text-lg h-12 rounded-xl"
+                      className="bg-white/30 border-white/30 text-lg h-12 rounded-xl"
                       value={edu.studyType || ''} 
                       placeholder="Bachelor of Science" 
                       onChange={e => updateEducation(edu.id, { studyType: e.target.value })} 
@@ -342,7 +342,7 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <Label className="text-foreground/80">Field of Study</Label>
                     <Input 
-                      className="bg-white/40 border-white/40 text-lg h-12 rounded-xl"
+                      className="bg-white/30 border-white/30 text-lg h-12 rounded-xl"
                       value={edu.area || ''} 
                       placeholder="Computer Science" 
                       onChange={e => updateEducation(edu.id, { area: e.target.value })} 

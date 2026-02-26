@@ -25,24 +25,27 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased bg-background relative overflow-x-hidden min-h-screen">
+      <body className="font-body antialiased relative overflow-x-hidden min-h-screen">
         {tropicalBg && (
-          <div className="fixed inset-0 -z-10 opacity-[0.35] pointer-events-none scale-110">
+          <div className="fixed inset-0 -z-20 pointer-events-none scale-105 origin-center">
             <Image
               src={tropicalBg.imageUrl}
               alt="Tropical background"
               fill
-              className="object-cover"
+              className="object-cover opacity-60"
               data-ai-hint={tropicalBg.imageHint}
               priority
             />
           </div>
         )}
+        {/* Semi-transparent overlay to ensure readability while showing background */}
+        <div className="fixed inset-0 -z-10 bg-background/40 backdrop-blur-sm pointer-events-none" />
+        
         <ResumeProvider>
           <div className="flex min-h-screen relative z-10">
             <Navigation />
             <main className="flex-1 md:ml-64 min-h-screen p-4 md:p-8 lg:p-12">
-              <div className="max-w-6xl mx-auto bg-white/30 backdrop-blur-3xl rounded-[3rem] p-6 md:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-white/60">
+              <div className="max-w-6xl mx-auto bg-white/20 backdrop-blur-3xl rounded-[3rem] p-6 md:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-white/60">
                 {children}
               </div>
             </main>
