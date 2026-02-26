@@ -27,7 +27,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased bg-background relative overflow-x-hidden min-h-screen">
         {tropicalBg && (
-          <div className="fixed inset-0 -z-10 opacity-[0.25] pointer-events-none scale-105">
+          <div className="fixed inset-0 -z-10 opacity-[0.35] pointer-events-none scale-110">
             <Image
               src={tropicalBg.imageUrl}
               alt="Tropical background"
@@ -42,7 +42,7 @@ export default function RootLayout({
           <div className="flex min-h-screen relative z-10">
             <Navigation />
             <main className="flex-1 md:ml-64 min-h-screen p-4 md:p-8 lg:p-12">
-              <div className="max-w-6xl mx-auto bg-white/40 backdrop-blur-xl rounded-[2.5rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/60">
+              <div className="max-w-6xl mx-auto bg-white/30 backdrop-blur-3xl rounded-[3rem] p-6 md:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-white/60">
                 {children}
               </div>
             </main>
